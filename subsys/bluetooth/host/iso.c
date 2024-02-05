@@ -235,8 +235,9 @@ static int hci_le_setup_iso_data_path(const struct bt_conn *iso, uint8_t dir,
 	sys_put_le24(path->delay, cp->controller_delay);
 	cp->codec_config_len = path->cc_len;
 	cc = net_buf_add(buf, cp->codec_config_len);
-	memcpy(cc, path->cc, cp->codec_config_len);
-
+	if (cp->codec_config_len) {
+		memcpy(cc, path->cc, cp->codec_config_len);
+	}
 	err = bt_hci_cmd_send_sync(BT_HCI_OP_LE_SETUP_ISO_PATH, buf, &rsp);
 	if (err) {
 		return err;
