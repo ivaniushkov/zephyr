@@ -2064,8 +2064,12 @@ void bt_hci_le_per_adv_response_report(struct net_buf *buf)
 		response = net_buf_pull_mem(buf, sizeof(struct bt_hci_evt_le_per_adv_response));
 		info.tx_power = response->tx_power;
 		info.rssi = response->rssi;
-		info.cte_type = BIT(response->cte_type);
 		info.response_slot = response->response_slot;
+		if (response->cte_type == BT_HCI_LE_NO_CTE) {
+			info.cte_type = BT_DF_CTE_TYPE_NONE;
+		} else {
+			info.cte_type = BIT(response->cte_type);
+		}
 
 		if (buf->len < response->data_length) {
 			LOG_ERR("Invalid response report");

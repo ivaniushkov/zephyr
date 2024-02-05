@@ -825,9 +825,13 @@ static void bt_hci_le_per_adv_report_common(struct net_buf *buf)
 
 	info.tx_power = evt->tx_power;
 	info.rssi = evt->rssi;
-	info.cte_type = BIT(evt->cte_type);
 	info.addr = &per_adv_sync->addr;
 	info.sid = per_adv_sync->sid;
+	if (evt->cte_type == BT_HCI_LE_NO_CTE) {
+		info.cte_type = BT_DF_CTE_TYPE_NONE;
+	} else {
+		info.cte_type = BIT(evt->cte_type);
+	}
 
 #if defined(CONFIG_BT_PER_ADV_SYNC_RSP)
 	info.periodic_event_counter = sys_le16_to_cpu(evt->periodic_event_counter);
